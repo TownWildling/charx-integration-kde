@@ -93,14 +93,26 @@ The smoke executable is built only when `BUILD_TESTING=ON` (the default).
 
 ## Removal
 
-For the user-local layout above, remove only this project's files, then refresh
-the MIME database and log out of Plasma and back in:
+For the user-local layout above, find the installed Plasma hook in CMake's
+install manifest:
+
+```sh
+grep '/plasma-workspace/env/charx-thumbnailer\.sh$' build-local/install_manifest.txt
+```
+
+Review the printed path and substitute it in the removal command below.
+If you removed the build directory, use the configuration directory that was
+in effect when you configured the build. CMake uses an absolute
+`XDG_CONFIG_HOME` or falls back to `$HOME/.config` if it is unset or relative.
+
+Remove the installed files, refresh the MIME database, and log out of Plasma
+and back in:
 
 ```sh
 rm -- "$HOME/.local/lib64/qt6/plugins/kf6/thumbcreator/libcharxthumbnail.so" \
   "$HOME/.local/libexec/charx-thumbnailer/charx_reader.py" \
   "$HOME/.local/share/mime/packages/application-x-charx.xml" \
-  "${XDG_CONFIG_HOME:-$HOME/.config}/plasma-workspace/env/charx-thumbnailer.sh"
+  "/path/from/manifest/plasma-workspace/env/charx-thumbnailer.sh"
 update-mime-database "$HOME/.local/share/mime"
 ```
 
