@@ -1,6 +1,9 @@
 import base64
 import importlib.util
 import json
+import os
+import subprocess
+import sys
 from pathlib import Path
 import tempfile
 import unittest
@@ -85,6 +88,18 @@ class ReaderTests(unittest.TestCase):
     def test_case_sensitive_paths(self):
         with self.assertRaises(reader.CardError):
             reader.read_icon(self.archive([self.icon('embeded://A.png')], {'a.png': b'image'}))
+
+    def test_fifo_without_writer(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'card.charx'
+            os.mkfifo(path)
+            result = subprocess.run(
+                [sys.executable, '-I', spec.origin, str(path)],
+                capture_output=True, timeout=2,
+            )
+        self.assertEqual(result.returncode, 1)
+        self.assertIn(b'Input must be a regular file', result.stderr)
+        self.assertEqual(result.stdout, b'')
 
     def test_symlink(self):
         path = self.archive([self.icon('embeded://link')])

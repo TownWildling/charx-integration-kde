@@ -65,7 +65,8 @@ def resolve_uri(uri, archive, entries):
 
 
 def read_icon(path):
-    with open(path, 'rb') as source:
+    # Open without waiting for a FIFO writer, then validate the opened file.
+    with open(path, 'rb', opener=lambda name, flags: os.open(name, flags | os.O_NONBLOCK)) as source:
         if not stat.S_ISREG(os.fstat(source.fileno()).st_mode):
             raise CardError('Input must be a regular file')
         source.seek(0, 2)
