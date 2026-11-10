@@ -1,0 +1,11 @@
+{
+    "KPlugin": {
+        "Id": "charxthumbnail",
+        "Name": "CHARX Character Cards",
+        "Description": "Local portrait thumbnails for CHARX character cards",
+        "MimeTypes": ["application/x-charx"],
+        "License": "MIT"
+    },
+    "MimeType": "application/x-charx;",
+    "CacheThumbnail": true
+}

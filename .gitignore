@@ -1,0 +1,56 @@
+# Out-of-source CMake builds and staging directories
+/build*/
+/cmake-build-*/
+/stage/
+/_CPack_Packages/
+
+# Generated CMake files (including accidental in-source builds)
+CMakeFiles/
+CMakeCache.txt
+CMakeUserPresets.json
+cmake_install.cmake
+install_manifest*.txt
+CTestTestfile.cmake
+DartConfiguration.tcl
+Testing/
+/Makefile
+/build.ninja
+/rules.ninja
+/.ninja_deps
+/.ninja_log
+/compile_commands.json
+/paths.h
+/charxthumbnail_autogen/
+/charx-plugin-smoke_autogen/
+/charx-decoder-test_autogen/
+/charx-plugin-smoke
+/charx-decoder-test
+/lib/
+
+# Compiler and linker outputs
+*.o
+*.obj
+*.a
+*.so
+*.so.*
+
+# Python bytecode, environments, and tool caches
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Editor and desktop metadata
+.idea/
+.vscode/
+*~
+*.swp
+*.swo
+.DS_Store
+Thumbs.db

@@ -1,0 +1,3 @@
+#pragma once
+#define CHARX_PYTHON "@Python3_EXECUTABLE@"
+#define CHARX_READER "@KDE_INSTALL_FULL_LIBEXECDIR@/charx-thumbnailer/charx_reader.py"

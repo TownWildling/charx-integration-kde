@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mime-info xmlns="http://www.freedesktop.org/standards/shared-mime-info">
+  <mime-type type="application/x-charx">
+    <comment>Character Card V3 archive</comment>
+    <sub-class-of type="application/zip"/>
+    <glob pattern="*.charx"/>
+    <icon name="image-x-generic"/>
+  </mime-type>
+</mime-info>
