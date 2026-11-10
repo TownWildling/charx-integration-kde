@@ -1,0 +1,7 @@
+# Sourced by Plasma at login.
+if [ -r '@CHARX_PLUGIN_FILE@' ]; then
+    case ":${QT_PLUGIN_PATH:-}:" in
+        *':@CHARX_PLUGIN_DIR@:'*) ;;
+        *) export QT_PLUGIN_PATH='@CHARX_PLUGIN_DIR@'"${QT_PLUGIN_PATH:+:$QT_PLUGIN_PATH}" ;;
+    esac
+fi

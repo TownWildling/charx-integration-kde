@@ -15,6 +15,7 @@ cmake -S . -B build-local -G Ninja \
   -DCMAKE_INSTALL_PREFIX="$HOME/.local" \
   -DKDE_INSTALL_PLUGINDIR=lib64/qt6/plugins \
   -DKDE_INSTALL_LIBEXECDIR=libexec \
+  -DCHARX_INSTALL_PLASMA_HOOK=ON \
   -DPython3_EXECUTABLE=/usr/bin/python3
 cmake --build build-local
 ctest --test-dir build-local --output-on-failure
@@ -22,26 +23,20 @@ cmake --install build-local
 update-mime-database "$HOME/.local/share/mime"
 ```
 
-No root installation, dependency replacement, shell profile edits, or automatic
-cache deletion is performed. Installation adds three project-owned files: the
-plugin, its Python helper, and its MIME definition. CMake's `install_manifest.txt`
-lists their exact locations. The interpreter and helper paths are fixed at
-configure time; reconfigure and rebuild if the installation prefix changes.
+The user-local install adds the plugin, its Python helper, the MIME definition,
+and a Plasma login hook. Run the commands as your desktop user. CMake's
+`install_manifest.txt` lists the installed files. Reconfigure and rebuild if
+the installation prefix changes.
 
-Qt does not automatically search every user-local plugin directory. For a
-scoped trial, close existing Dolphin windows normally, then launch a fresh
-process with:
+Log out of Plasma and back in, then open Dolphin normally. Enable
+**Character Card V3 archives (CHARX)** in Dolphin's preview settings and turn
+previews on. Dolphin's maximum preview file size must accommodate the archive.
 
-```sh
-QT_PLUGIN_PATH="$HOME/.local/lib64/qt6/plugins${QT_PLUGIN_PATH:+:$QT_PLUGIN_PATH}" dolphin
-```
-
-Enable **Character Card V3 archives (CHARX)** in Dolphin's preview settings and turn previews on.
-Dolphin's maximum preview file size must accommodate the archive. Existing
-Dolphin/KIO processes may retain their old environment and plugin list; logging
-out and in resets them. The scoped launch does not enable the plugin for every
-application in the session. Do not replace Fedora's Qt plugin directories or
-set a system-wide Qt search path for this project.
+The hook lives under `${XDG_CONFIG_HOME:-$HOME/.config}/plasma-workspace/env`.
+It adds the installed Qt plugin directory to the Plasma session's
+`QT_PLUGIN_PATH` only when the plugin file is readable. It preserves existing
+entries and leaves the path alone if the plugin is removed.
+`CHARX_INSTALL_PLASMA_HOOK` defaults to `OFF` for other build configurations.
 
 For distribution-wide discovery, package the project as an RPM using Fedora's
 Qt plugin path (`qtpaths6 --plugin-dir`) and a `/usr` prefix. Rebuild against
@@ -99,12 +94,13 @@ The smoke executable is built only when `BUILD_TESTING=ON` (the default).
 ## Removal
 
 For the user-local layout above, remove only this project's files, then refresh
-the MIME database and restart Dolphin normally:
+the MIME database and log out of Plasma and back in:
 
 ```sh
 rm -- "$HOME/.local/lib64/qt6/plugins/kf6/thumbcreator/libcharxthumbnail.so" \
   "$HOME/.local/libexec/charx-thumbnailer/charx_reader.py" \
-  "$HOME/.local/share/mime/packages/application-x-charx.xml"
+  "$HOME/.local/share/mime/packages/application-x-charx.xml" \
+  "${XDG_CONFIG_HOME:-$HOME/.config}/plasma-workspace/env/charx-thumbnailer.sh"
 update-mime-database "$HOME/.local/share/mime"
 ```
 
