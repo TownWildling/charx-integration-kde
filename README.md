@@ -36,7 +36,7 @@ process with:
 QT_PLUGIN_PATH="$HOME/.local/lib64/qt6/plugins${QT_PLUGIN_PATH:+:$QT_PLUGIN_PATH}" dolphin
 ```
 
-Enable **CHARX Character Cards** in Dolphin's preview settings and turn previews on.
+Enable **Character Card V3 archives (CHARX)** in Dolphin's preview settings and turn previews on.
 Dolphin's maximum preview file size must accommodate the archive. Existing
 Dolphin/KIO processes may retain their old environment and plugin list; logging
 out and in resets them. The scoped launch does not enable the plugin for every
