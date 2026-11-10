@@ -3,6 +3,13 @@
 #include <QImageReader>
 #include <QImageIOHandler>
 
+namespace {
+QSize fittedSize(const QSize &size, const QSize &bounds)
+{
+    return size.scaled(bounds, Qt::KeepAspectRatio).expandedTo(QSize(1, 1));
+}
+}
+
 QImage Charx::decodeIcon(QByteArray bytes, const QSize &target)
 {
     QBuffer buffer(&bytes);
@@ -18,9 +25,9 @@ QImage Charx::decodeIcon(QByteArray bytes, const QSize &target)
     reader.setAutoTransform(true);
     const QSize decodeBounds = (reader.transformation() & QImageIOHandler::TransformationRotate90)
         ? target.transposed() : target;
-    reader.setScaledSize(size.scaled(decodeBounds, Qt::KeepAspectRatio));
+    reader.setScaledSize(fittedSize(size, decodeBounds));
     QImage image = reader.read();
     if (image.isNull())
         return {};
-    return image.scaled(target, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    return image.scaled(fittedSize(image.size(), target), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
 }

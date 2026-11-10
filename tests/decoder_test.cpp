@@ -41,5 +41,19 @@ int main(int argc, char **argv)
         qCritical() << "Unexpected rotated thumbnail size:" << rotated.size();
         return 6;
     }
+    for (const QSize size : {QSize(4096, 16), QSize(16, 4096)}) {
+        QImage thin(size, QImage::Format_RGB32);
+        thin.fill(Qt::blue);
+        QByteArray bytes;
+        QBuffer buffer(&bytes);
+        if (!buffer.open(QIODevice::WriteOnly) || !thin.save(&buffer, "PNG"))
+            return 7;
+        const QSize expected = size.width() > size.height() ? QSize(64, 1) : QSize(1, 64);
+        const auto thumbnail = Charx::decodeIcon(bytes, QSize(64, 64));
+        if (thumbnail.size() != expected) {
+            qCritical() << "Unexpected thin thumbnail size:" << thumbnail.size();
+            return 8;
+        }
+    }
     return 0;
 }
