@@ -1,6 +1,7 @@
 #include "pipeline.h"
 #include <QBuffer>
 #include <QImageReader>
+#include <QImageIOHandler>
 
 QImage Charx::decodeIcon(QByteArray bytes, const QSize &target)
 {
@@ -15,7 +16,9 @@ QImage Charx::decodeIcon(QByteArray bytes, const QSize &target)
         || qint64(size.width()) * size.height() > 32 * 1024 * 1024)
         return {};
     reader.setAutoTransform(true);
-    reader.setScaledSize(size.scaled(target, Qt::KeepAspectRatio));
+    const QSize decodeBounds = (reader.transformation() & QImageIOHandler::TransformationRotate90)
+        ? target.transposed() : target;
+    reader.setScaledSize(size.scaled(decodeBounds, Qt::KeepAspectRatio));
     QImage image = reader.read();
     if (image.isNull())
         return {};

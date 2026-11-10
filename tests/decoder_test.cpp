@@ -27,5 +27,19 @@ int main(int argc, char **argv)
         if (!Charx::decodeIcon(bytes, QSize(32, 32)).isNull())
             return 4;
     }
+    QImage portrait(1200, 800, QImage::Format_RGB32);
+    portrait.fill(Qt::red);
+    QByteArray rotatedJpeg;
+    QBuffer jpegBuffer(&rotatedJpeg);
+    if (!jpegBuffer.open(QIODevice::WriteOnly) || !portrait.save(&jpegBuffer, "JPEG"))
+        return 5;
+    // APP1 with a little-endian EXIF orientation tag set to 6 (90° clockwise).
+    rotatedJpeg.insert(2, QByteArray::fromHex(
+        "ffe1002245786966000049492a0008000000010012010300010000000600000000000000"));
+    const auto rotated = Charx::decodeIcon(rotatedJpeg, QSize(100, 300));
+    if (rotated.size() != QSize(100, 150)) {
+        qCritical() << "Unexpected rotated thumbnail size:" << rotated.size();
+        return 6;
+    }
     return 0;
 }
